@@ -61,28 +61,29 @@ mon_backtrace(int argc, char **argv, struct Trapframe *tf)
 {
 	// Your code here.
 	unsigned int ebp, eip;
-	unsigned int  arg[5];
+	unsigned int  arg[100];
 	int i = 0;
+	int num = 0;
 	ebp = read_ebp();
 	eip = *((unsigned int*)(ebp + 4));
-	arg[0] =  *((unsigned int*)(ebp + 8));
-	arg[1] =  *((unsigned int*)(ebp + 12));
-	arg[2] =  *((unsigned int*)(ebp + 16));
-	arg[3] =  *((unsigned int*)(ebp + 20));
-	arg[4] =  *((unsigned int*)(ebp + 24));
-	while ( ebp >0)
+	  while ( ebp > 0 )
 	  {
-	    cprintf("ebp = %x eip = %x arguments: %x %x %x %x %x\n", ebp, eip, arg[0],arg[1],arg[2],arg[3],arg[4]);
-	    	debuginfo_eip( (uintptr_t) eip, &info  );
+	    	  
+	    debuginfo_eip( (uintptr_t) eip, &info  );
+	    num = info.eip_fn_narg;
+	    for(i = 0; i< num;i++)
+	      {
+		arg[i] = *((unsigned int*)(ebp + (i+2)*4 ));
+	      }
+	    cprintf("ebp = %x eip = %x argNum: %d args:\n",ebp,eip, num);
+	    for(i = 0;i<num;i++)
+	      cprintf("%x ", arg[i]);
+	    cprintf("\n");
+	    cprintf ("\n %s:%d:  %.*s\n",info.eip_file, info.eip_line, info.eip_fn_namelen, info.eip_fn_name);
+
 	    ebp =  *((unsigned int*)(ebp));
 	    eip = *((unsigned int*)(ebp + 4));
 	    memset(&info, 0 , sizeof(info));
-	    cprintf("\n");
-	    arg[0] =  *((unsigned int*)(ebp + 8));
-	    arg[1] =  *((unsigned int*)(ebp + 12));
-	    arg[2] =  *((unsigned int*)(ebp + 16));
-	    arg[3] =  *((unsigned int*)(ebp + 20));
-	    arg[4] =  *((unsigned int*)(ebp + 24));
  
 	  }
 	return 0;

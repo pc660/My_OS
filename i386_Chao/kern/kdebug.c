@@ -187,7 +187,6 @@ debuginfo_eip(uintptr_t addr, struct Eipdebuginfo *info)
 	else
 		return -1;
 
-		cprintf ("\n\t %s:%d:  %.*s+%d",info->eip_file, info->eip_line, info->eip_fn_namelen, info->eip_fn_name, addr == info->eip_fn_addr ? 0 :addr);
 
 	// Search backwards from the line number for the relevant filename
 	// stab.
@@ -209,6 +208,7 @@ debuginfo_eip(uintptr_t addr, struct Eipdebuginfo *info)
 		     lline < rfun && stabs[lline].n_type == N_PSYM;
 		     lline++)
 			info->eip_fn_narg++;
+	
 
 	return 0;
 }
